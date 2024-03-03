@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift(File.dirname(__FILE__) + "/../lib") unless $LOAD_PATH.include?(File.dirname(__FILE__) + "/../lib")
+
+require "devloop"
+begin
+  require "spring/env"
+rescue LoadError
+  # Spring not available
+end
+
+begin
+  diff = `git diff -U0 spec/`
+  if diff == ""
+    diff = `git diff HEAD~1 -U0 spec/`
+  end
+
+  tests = Devloop::DiffParser.call(diff)
+  puts "Devloop running tests:"
+  if tests.length == 0
+    puts "No tests to run"
+    return
+  end
+  puts tests
+  command = if defined?(Spring) && Spring::Env.new.server_running?
+      "spring rspec"
+    else
+      "rspec"
+    end
+  system("bundle exec #{command} #{tests.join(" ")}")
+rescue Interrupt # user pressed CTRL+C
+  STDERR.puts "\nDevloop: exiting due to user request"
+  exit 130
+end

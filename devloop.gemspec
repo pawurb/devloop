@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.files = `git ls-files`.split("\n")
   s.test_files = s.files.grep(%r{^(spec)/})
   s.require_paths = ["lib"]
+  s.executables = ["devloop", "devloop_run"]
   s.license = "MIT"
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec"

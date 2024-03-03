@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+require "rubygems"
+
+$LOAD_PATH.unshift(File.dirname(__FILE__) + "/../lib") unless $LOAD_PATH.include?(File.dirname(__FILE__) + "/../lib")
+
+require "devloop"
+
+begin
+  puts "Devloop: watching for changes in spec directory..."
+  system("fswatch -e '.*' -i '\.rb$' #{Dir.pwd}/spec | xargs -n1 -I{} bundle exec devloop_run")
+rescue Interrupt # user pressed CTRL+C
+  STDERR.puts "\nDevloop: exiting due to user request"
+  exit 130
+end
