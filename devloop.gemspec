@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.version = Devloop::VERSION
   s.authors = ["pawurb"]
   s.email = ["contact@pawelurbanek.com"]
-  s.summary = %q{ Ruby test runner }
-  s.description = %q{ This simple tool allows to run apps tests based on current git diff output. }
+  s.summary = "An automated test runner for Rails applications.  Execute specs instantly based on a recent git diff output."
+  s.description = "Devloop is an automated Rspec runner for Rails app. The purpose of this tool is to provide continuous and instant feedback when working on Rails app. It runs only specs from lines modified in the recent git commits. Even if you have a large user_spec.rb file, you'll receive specs feedback in a fraction of a second on each file save."
   s.homepage = "https://github.com/pawurb/devloop"
   s.files = `git ls-files`.split("\n")
   s.test_files = s.files.grep(%r{^(spec)/})
