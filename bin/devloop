@@ -5,8 +5,9 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + "/../lib") unless $LOAD_PATH.include
 require "devloop"
 
 begin
+  system("bundle exec devloop_run")
   puts "Devloop: watching for changes in spec directory..."
-  system("fswatch -e '.*' -i '\.rb$' #{Dir.pwd}/spec | xargs -n1 -I{} bundle exec devloop_run")
+  system("fswatch -e '.*' -i '\.rb$' #{Dir.pwd} | xargs -n1 -I{} bundle exec devloop_run")
 rescue Interrupt # user pressed CTRL+C
   STDERR.puts "\nDevloop: exiting due to user request"
   exit 130
