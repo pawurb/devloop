@@ -5,15 +5,14 @@ module Devloop
     end
 
     def call(diff)
-      lines = diff.split("\n")
-      results = []
-      file = ""
-      lines.each_with_index do |line, index|
+      _, results = diff.split("\n").reduce(["", []]) do |(file, results), line|
         if line.start_with?("+++ b/")
-          file = line[6..-1]
+          [line[6..-1], results]
         elsif line.start_with?("@@ -")
           line_number = line.match(/@@ -(\d+)/)[1]
-          results << "#{file}:#{line_number}"
+          [file, results << "#{file}:#{line_number}"]
+        else
+          [file, results]
         end
       end
       results
