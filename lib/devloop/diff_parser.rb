@@ -10,12 +10,26 @@ module Devloop
           [line[6..-1], results]
         elsif line.start_with?("@@ -")
           line_number = line.match(/@@ -(\d+)/)[1]
-          [file, results << "#{file}:#{line_number}"]
+          [file, results << "#{relative_path(file)}:#{line_number}"]
         else
           [file, results]
         end
       end
       results
+    end
+
+    private
+
+    def relative_path(path)
+      path.gsub(project_path, "")
+    end
+
+    def project_path
+      @project_path ||= Dir.pwd.gsub("#{git_root_path}/", "") + "/"
+    end
+
+    def git_root_path
+      @git_root_path ||= `git rev-parse --show-toplevel`.strip
     end
   end
 end
