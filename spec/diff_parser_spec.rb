@@ -4,7 +4,7 @@ require "spec_helper"
 require "devloop/diff_parser"
 
 describe Devloop::DiffParser do
-  context "when the project root is different from the git root" do
+  context "when the project root is the same as git root" do
     let(:diff1) do
       <<~DIFF
         diff --git a/spec/models/team_spec.rb b/spec/models/team_spec.rb
