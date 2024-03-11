@@ -4,7 +4,30 @@ require "spec_helper"
 require "devloop/diff_parser"
 
 describe Devloop::DiffParser do
-  context "when the project root is the same as git root" do
+  context "first line of a file was edited" do
+    let(:diff) do
+      <<~DIFF
+            diff --git a/spec/models/team_spec.rb b/spec/models/team_spec.rb
+        index 19772f2a..9f614e20 100644
+        --- a/spec/models/team_spec.rb
+        +++ b/spec/models/team_spec.rb
+        @@ -1 +1,3 @@ describe Team do
+        -    it "has_many emojis" do
+        +    it "has_many eojis" do
+        @@ -24,2 +24,2 @@ describe Team do
+        -  describe "normalize attributes" do
+        -    it "does not allow empty string values" do
+        +  describe "normalize attrbtes" do
+        +    it "does not allw empty string values" do
+      DIFF
+    end
+
+    it "will run the whole file" do
+      expect(Devloop::DiffParser.call(diff)).to eq(["spec/models/team_spec.rb"])
+    end
+  end
+
+  context "the project root is the same as git root" do
     let(:diff1) do
       <<~DIFF
         diff --git a/spec/models/team_spec.rb b/spec/models/team_spec.rb
@@ -39,7 +62,7 @@ describe Devloop::DiffParser do
         -  describe "normalize attributes" do
         -    it "does not allow empty string values" do
         +  describe "normalize attrbtes" do
-        +    it "does not allw empty sting values" do
+        +    it "does not allw empty string values" do
       DIFF
     end
 
@@ -49,7 +72,7 @@ describe Devloop::DiffParser do
     end
   end
 
-  context "when the project root is different from the git root" do
+  context "the project root is different from the git root" do
     let(:diff) do
       <<~DIFF
         diff --git a/src/spec/models/team_spec.rb b/src/spec/models/team_spec.rb
@@ -63,7 +86,7 @@ describe Devloop::DiffParser do
         -  describe "normalize attributes" do
         -    it "does not allow empty string values" do
         +  describe "normalize attrbtes" do
-        +    it "does not allw empty sting values" do
+        +    it "does not allw empty string values" do
       DIFF
     end
 

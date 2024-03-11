@@ -2,6 +2,8 @@
 
 Devloop is an automated Rspec runner for Rails apps inspired by [TLDR](https://github.com/tendersearls/tldr). The purpose of this tool is to provide continuous and instant feedback when working on the Rails app. It runs only specs from _lines_ modified in the recent git commits. Even if you have a large `spec/user_spec.rb` file, you'll receive specs feedback in ~second on each file save.
 
+Optionally, you can edit first line of any spec file (i.e. add `#`) to run all the tests from it.
+
 ## Installation 
 
 It uses [fswatch](https://github.com/emcrisostomo/fswatch) so make sure to install it first:
