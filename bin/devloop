@@ -6,9 +6,11 @@ require "devloop"
 
 begin
   system("bundle exec spring > /dev/null 2>&1")
-  system("bundle exec devloop_run")
+  is_bundled = `bundle list`.include?("devloop")
+  run_command = is_bundled ? "bundle exec devloop_run" : "devloop_run"
+  system(run_command)
   puts "Devloop: watching for changes in spec directory..."
-  system("fswatch -e '.*' -i '\.rb$' #{Dir.pwd} | xargs -n1 -I{} bundle exec devloop_run")
+  system("fswatch -e '.*' -i '\.rb$' #{Dir.pwd} | xargs -n1 -I{} #{run_command}")
 rescue Interrupt # user pressed CTRL+C
   STDERR.puts "\nDevloop: exiting due to user request"
   exit 130

@@ -24,7 +24,16 @@ Now you can run:
 bundle exec devloop
 ```
 
-While this command it running it will automatically execute tests related to the recently modified lines of code from `spec/` folder.
+You can also use it without adding to the `Gemfile`:
+
+```bash 
+gem install devloop
+devloop
+```
+
+## Usage
+
+While `devloop` command is running it will automatically execute tests related to the recently modified lines of code from `spec/` folder.
 
 Devloop will automatically detect if [Spring](https://github.com/rails/spring) is enabled for your Rails app. I've observed it reduces time needed to run specs by ~4x.
 
