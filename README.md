@@ -31,9 +31,11 @@ gem install devloop
 devloop
 ```
 
+Remember to run the `devloop` command from the root of your Rails application.
+
 ## Usage
 
-While `devloop` command is running it will automatically execute tests related to the recently modified lines of code from `spec/` folder.
+While `devloop` process is running it will automatically execute tests related to the recently modified lines of code from `spec/` folder.
 
 Devloop will automatically detect if [Spring](https://github.com/rails/spring) is enabled for your Rails app. I've observed it reduces time needed to run specs by ~4x.
 
