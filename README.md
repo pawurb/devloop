@@ -6,12 +6,6 @@ Optionally, you can edit first line of any spec file (i.e. add `#`) to run all t
 
 ## Installation 
 
-It uses [fswatch](https://github.com/emcrisostomo/fswatch) so make sure to install it first:
-
-```bash
-brew install fswatch
-```
-
 In your `Gemfile`:
 
 ```ruby

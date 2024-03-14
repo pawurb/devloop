@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.executables = ["devloop", "devloop_run"]
   s.license = "MIT"
+  s.add_dependency "listen"
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec"
   s.add_development_dependency "rufo"
