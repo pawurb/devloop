@@ -10,7 +10,7 @@ rescue LoadError
 end
 
 begin
-  diff = `git diff -U0 spec/`
+  diff = `git diff HEAD -U0 spec/`
   if diff == ""
     diff = `git diff HEAD~1 -U0 spec/`
   end
