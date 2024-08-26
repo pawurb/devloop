@@ -96,4 +96,53 @@ describe Devloop::DiffParser do
       expect(Devloop::DiffParser.call(diff)).to eq(["spec/models/team_spec.rb:19", "spec/models/team_spec.rb:24"])
     end
   end
+
+  context "removes 0 line numbers" do
+    let(:diff) do
+      <<~DIFF
+        diff --git a/spec/config_spec.rb b/spec/config_spec.rb
+        index d9716e7..b470ec2 100644
+        --- a/spec/config_spec.rb
+        +++ b/spec/config_spec.rb
+        @@ -5 +5 @@ require "spec_helper"
+        -describe "PgLocksMonitor::Confiuration" do
+        +describe "PgLocksMonitor::Configuration" do
+        @@ -8,2 +8,5 @@ describe "PgLocksMonitor::Confiuration" do
+        -    expect(config.notify_locks).to eq true
+        -    expect(config.notify_blocking).to eq true
+        +    expect(config.monitor_locks).to eq true
+        +    expect(config.monitor_blocking).to eq true
+        +    expect(config.locks_min_duration_ms).to eq 200
+        +    expect(config.blocking_min_duration_ms).to eq 100
+        +    expect(config.notifier_class).to eq PgLocksMonitor::DefaultNotifier
+        @@ -14 +17 @@ describe "PgLocksMonitor::Confiuration" do
+        -      config.notify_locks = false
+        +      config.monitor_locks = false
+        @@ -17 +20 @@ describe "PgLocksMonitor::Confiuration" do
+        -    expect(PgLocksMonitor.configuration.notify_locks).to eq false
+        +    expect(PgLocksMonitor.configuration.monitor_locks).to eq false
+        diff --git a/spec/default_notifier_spec.rb b/spec/default_notifier_spec.rb
+        new file mode 100644
+        index 0000000..d99d3a1
+        --- /dev/null
+        +++ b/spec/default_notifier_spec.rb
+        @@ -0,0 +1,11 @@
+        +# frozen_string_literal: true
+        +
+        +require "spec_helper"
+        +
+        +describe PgLocksMonitor::DefaultNotifier do
+        +  it "requires correct config if Slack notifications enabled" do
+        +    expect {
+        +      PgLocksMonitor::DefaultNotifier.call({})
+        +    }.not_to raise_error
+        +  end
+        +end
+      DIFF
+    end
+
+    it "parses the diff correctly" do
+      expect(Devloop::DiffParser.call(diff)).to eq(["spec/config_spec.rb:5", "spec/config_spec.rb:8", "spec/config_spec.rb:14", "spec/config_spec.rb:17", "spec/default_notifier_spec.rb"])
+    end
+  end
 end

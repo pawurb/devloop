@@ -21,7 +21,13 @@ module Devloop
       end.uniq
 
       # Remove filenames with line number if filename without line number is present
-      results.reject { |result| results.include?(result.split(":").first) && result.include?(":") }
+      res = results.reject { |result| results.include?(result.split(":").first) && result.include?(":") }.map do |el|
+        if el.split(":").last == "0"
+          el.split(":").first
+        else
+          el
+        end
+      end
     end
 
     private
