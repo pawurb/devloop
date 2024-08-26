@@ -10,7 +10,7 @@ module Devloop
           [line[6..-1], results]
         elsif line.start_with?("@@ -")
           line_number = line.match(/@@ -(\d+)/)[1]
-          if line_number == "1"
+          if line_number == "1" || line_number == "0"
             [file, results << "#{relative_path(file)}"]
           else
             [file, results << "#{relative_path(file)}:#{line_number}"]
@@ -21,13 +21,7 @@ module Devloop
       end.uniq
 
       # Remove filenames with line number if filename without line number is present
-      res = results.reject { |result| results.include?(result.split(":").first) && result.include?(":") }.map do |el|
-        if el.split(":").last == "0"
-          el.split(":").first
-        else
-          el
-        end
-      end
+      res = results.reject { |result| results.include?(result.split(":").first) && result.include?(":") }
     end
 
     private
