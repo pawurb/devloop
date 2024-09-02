@@ -68,7 +68,7 @@ describe Devloop::DiffParser do
 
     it "parses the diff correctly" do
       expect(Devloop::DiffParser.call(diff1)).to eq(["spec/models/team_spec.rb:10", "spec/models/user_spec.rb:167"])
-      expect(Devloop::DiffParser.call(diff2)).to eq(["spec/models/team_spec.rb:19", "spec/models/team_spec.rb:24"])
+      expect(Devloop::DiffParser.call(diff2)).to eq(["spec/models/team_spec.rb:19:20:21:22:23:24"])
     end
   end
 
@@ -93,7 +93,7 @@ describe Devloop::DiffParser do
     it "parses the diff correctly" do
       allow_any_instance_of(Devloop::DiffParser).to receive(:git_root_path).and_return("/Users/username/projects/")
       allow_any_instance_of(Devloop::DiffParser).to receive(:project_path).and_return("src/")
-      expect(Devloop::DiffParser.call(diff)).to eq(["spec/models/team_spec.rb:19", "spec/models/team_spec.rb:24"])
+      expect(Devloop::DiffParser.call(diff)).to eq(["spec/models/team_spec.rb:19:20:21:22:23:24"])
     end
   end
 
@@ -142,7 +142,37 @@ describe Devloop::DiffParser do
     end
 
     it "parses the diff correctly" do
-      expect(Devloop::DiffParser.call(diff)).to eq(["spec/config_spec.rb:5", "spec/config_spec.rb:8", "spec/config_spec.rb:14", "spec/config_spec.rb:17", "spec/default_notifier_spec.rb"])
+      expect(Devloop::DiffParser.call(diff)).to eq(["spec/config_spec.rb:5:6:7:8:9:10:11:12:13:14:15:16:17", "spec/default_notifier_spec.rb"])
+    end
+  end
+
+  context "executes each matching spec" do
+    let(:diff) do
+      <<~DIFF
+        diff --git a/spec/models/user_spec.rb b/spec/models/user_spec.rb
+        index 410ffa8c..0266ea38 100644
+        --- a/spec/models/user_spec.rb
+        +++ b/spec/models/user_spec.rb
+        @@ -10,3 +10,3 @@ describe User do
+        -  it "has a valid factory" do
+        -    expect(user).to be_valid
+        -  end
+        +  it "has a valid factory" do #
+        +    expect(user).to be_valid #
+        +  end #
+        @@ -14,2 +14,2 @@ describe User do
+        -  it "has pending_feedbacks" do
+        -    expect(create(:user).pending_feedbacks).to eq []
+        +  it "has pending_feedbacks" do#
+        +    expect(create(:user).pending_feedbacks).to eq [] #
+        @@ -17 +17 @@ describe User do
+        -
+        +#
+      DIFF
+    end
+
+    it "parses the diff correctly" do
+      expect(Devloop::DiffParser.call(diff)).to eq(["spec/models/user_spec.rb:10:11:12:13:14:15:16:17"])
     end
   end
 end

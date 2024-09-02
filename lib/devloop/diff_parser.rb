@@ -4,21 +4,32 @@ module Devloop
       new.call(diff)
     end
 
+    Diff = Struct.new(:filename, :line_number)
+
     def call(diff)
-      _, results = diff.split("\n").reduce(["", []]) do |(file, results), line|
+      _, diffs_data = diff.split("\n").reduce(["", []]) do |(file, diffs_data), line|
         if line.start_with?("+++ b/")
-          [line[6..-1], results]
+          [line[6..-1], diffs_data]
         elsif line.start_with?("@@ -")
           line_number = line.match(/@@ -(\d+)/)[1]
-          if line_number == "1" || line_number == "0"
-            [file, results << "#{relative_path(file)}"]
-          else
-            [file, results << "#{relative_path(file)}:#{line_number}"]
-          end
+          [file, diffs_data << Diff.new(relative_path(file), line_number)]
         else
-          [file, results]
+          [file, diffs_data]
         end
       end.uniq
+
+      results = diffs_data.group_by do |el|
+        el.filename
+      end.map do |key, value|
+        line_numbers = value.map(&:line_number).map(&:to_i)
+        if line_numbers.include?(0) || line_numbers.include?(1)
+          key
+        else
+          lines_range = (line_numbers.min..line_numbers.max).to_a.join(":")
+
+          "#{key}:#{lines_range}"
+        end
+      end
 
       # Remove filenames with line number if filename without line number is present
       res = results.reject { |result| results.include?(result.split(":").first) && result.include?(":") }
