@@ -9,6 +9,7 @@ require "listen"
 begin
   if %w[--version -v].include?(ARGV[0])
     puts "Devloop version #{Devloop::VERSION}"
+    exit
   end
 
   system("bundle exec spring > /dev/null 2>&1")
