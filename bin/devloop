@@ -3,9 +3,14 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + "/../lib") unless $LOAD_PATH.include?(File.dirname(__FILE__) + "/../lib")
 
 require "devloop"
+require "devloop/version"
 require "listen"
 
 begin
+  if %w[--version -v].include?(ARGV[0])
+    puts "Devloop version #{Devloop::VERSION}"
+  end
+
   system("bundle exec spring > /dev/null 2>&1")
   is_bundled = `bundle list`.include?("devloop")
   run_command = is_bundled ? "bundle exec devloop_run" : "devloop_run"
